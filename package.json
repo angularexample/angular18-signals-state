@@ -1,6 +1,11 @@
 {
   "name": "angular18-signals-state",
-  "version": "0.0.0",
+  "version": "18.0.0",
+  "description": "Angular 18 standalone with state management using pure Signals",
+  "author": {
+    "name": "JC Lango",
+    "email": "info@angularexample.com"
+  },
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -11,10 +16,12 @@
   "private": true,
   "dependencies": {
     "@angular/animations": "^18.0.0",
+    "@angular/cdk": "^18.0.6",
     "@angular/common": "^18.0.0",
     "@angular/compiler": "^18.0.0",
     "@angular/core": "^18.0.0",
     "@angular/forms": "^18.0.0",
+    "@angular/material": "^18.0.6",
     "@angular/platform-browser": "^18.0.0",
     "@angular/platform-browser-dynamic": "^18.0.0",
     "@angular/router": "^18.0.0",

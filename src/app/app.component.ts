@@ -1,13 +1,18 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {RouterOutlet} from '@angular/router';
+import {XxxHeaderComponent} from './xxx-header/xxx-header.component';
+import {XxxLoadingComponent} from './xxx-common/xxx-loading/xxx-loading.component';
 
 @Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [RouterOutlet],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        RouterOutlet,
+        XxxHeaderComponent,
+        XxxLoadingComponent
+    ],
+    selector: 'app-root',
+    standalone: true,
+    templateUrl: './app.component.html',
 })
 export class AppComponent {
-  title = 'angular18-signals-state';
 }
