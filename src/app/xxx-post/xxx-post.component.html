@@ -1,6 +1,6 @@
 <main>
   <xxx-content contentKey="{{contentKey}}"></xxx-content>
-  @if (content$ | async; as content) {
+  @if ($content(); as content) {
     <section>
       <h2>{{ content?.contentModel?.pageTitle }}</h2>
     </section>

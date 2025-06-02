@@ -1,7 +1,13 @@
 export interface XxxContent {
   contentModel?: XxxContentModel;
+  errorMessage?: string;
   key: string;
   status: XxxContentStatus;
+}
+
+export interface XxxContentApi {
+  contentModel: XxxContentModel;
+  key: string;
 }
 
 export interface XxxContentModel {
@@ -9,18 +15,16 @@ export interface XxxContentModel {
   pageTitle?: string;
 }
 
-export const xxxContentFeatureName = 'xxxContent';
-
 export const xxxContentInitialState: XxxContentState = {
   contents: [],
 };
 
 export interface XxxContentState {
   contents: XxxContent[];
+  selectedKey?: string;
 }
 
 export enum XxxContentStatus {
-  DEFAULT = 'DEFAULT',
   EMPTY = 'EMPTY',
   ERROR = 'ERROR',
   LOADED = 'LOADED',

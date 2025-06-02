@@ -1,16 +1,27 @@
-import {Injectable} from '@angular/core';
-import {Observable, of} from "rxjs";
+import {inject, Injectable, signal, Signal} from '@angular/core';
 import {XxxContent} from "./xxx-content.types";
+import {XxxContentStore} from "./xxx-content-store";
+
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
-export class XxxContentFacadeService {
-    isContentEmpty$ = (key: string): Observable<boolean> => of(false);
-    isContentError$ = (key: string): Observable<boolean> => of(false);
-    isContentLoading$ = (key: string): Observable<boolean> => of(false);
-    contentByKey$ = (key: string): Observable<XxxContent | undefined> => of(undefined);
+export class XxxContentFacade {
+  // Store needs to be declared before it is used
+  private contentStore: XxxContentStore = inject(XxxContentStore);
 
-    getContent(key: string): void {
-    }
+  $content: Signal<XxxContent | undefined> = this.contentStore.$content_;
+  $contentErrorMessage: Signal<string | undefined> = this.contentStore.$errorMessage_;
+  $isContentEmpty: Signal<boolean> = this.contentStore.$isContentEmpty_;
+  $isContentError: Signal<boolean> = this.contentStore.$isContentError_;
+  $isContentLoaded: Signal<boolean> = this.contentStore.$isContentLoaded_;
+  $isContentLoading: Signal<boolean> = this.contentStore.$isContentLoading_;
+
+  /**
+   * Call this when you render a page that needs content.
+   * @param key the key to the content for a given page
+   */
+  showContent(key: string): void {
+    this.contentStore.showContentAction(key);
+  }
 }

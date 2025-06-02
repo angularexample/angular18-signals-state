@@ -5,7 +5,7 @@ import {XxxUser} from "./xxx-user.types";
 @Injectable({
     providedIn: 'root'
 })
-export class XxxUserFacadeService {
+export class XxxUserFacade {
     isUsersEmpty$: Observable<boolean> = of(false);
     isUsersLoaded$: Observable<boolean> = of(false);
     isUsersLoading$: Observable<boolean> = of(false);

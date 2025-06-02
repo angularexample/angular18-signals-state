@@ -1,26 +1,23 @@
-import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
-import {Observable} from "rxjs";
+import {ChangeDetectionStrategy, Component, inject, Signal} from '@angular/core';
 import {XxxContent} from "../xxx-common/xxx-content/xxx-content.types";
-import {XxxContentFacadeService} from "../xxx-common/xxx-content/xxx-content-facade.service";
-import {AsyncPipe} from '@angular/common';
 import {XxxContentComponent} from '../xxx-common/xxx-content/xxx-content.component';
+import {XxxContentFacade} from "../xxx-common/xxx-content/xxx-content-facade.service";
 
 @Component({
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        AsyncPipe,
-        XxxContentComponent,
-    ],
-    selector: 'xxx-home',
-    standalone: true,
-    templateUrl: './xxx-home.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    XxxContentComponent,
+  ],
+  selector: 'xxx-home',
+  standalone: true,
+  templateUrl: './xxx-home.component.html',
 })
 export class XxxHomeComponent {
-    private contentFacade: XxxContentFacadeService = inject(XxxContentFacadeService);
-    contentKey = 'home';
-    content$: Observable<XxxContent | undefined> = this.contentFacade.contentByKey$(this.contentKey);
+  contentFacade: XxxContentFacade = inject(XxxContentFacade);
+  contentKey = 'home';
+  $content: Signal<XxxContent | undefined> = this.contentFacade.$content;
 
-    constructor() {
-        this.contentFacade.getContent(this.contentKey);
-    }
+  constructor() {
+    this.contentFacade.showContent(this.contentKey);
+  }
 }
