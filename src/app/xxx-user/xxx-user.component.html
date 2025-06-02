@@ -4,12 +4,12 @@
     <section>
       <h2>{{ content?.contentModel?.pageTitle }}</h2>
     </section>
-    @if (isUsersLoading$ | async) {
+    @if ($isUsersLoading()) {
       <p>Loading...</p>
-    } @else if (isUsersEmpty$ | async) {
+    } @else if ($isUsersEmpty()) {
       <p>None found.</p>
     }
-    @if (isUsersLoaded$|async) {
+    @if ($isUsersLoaded()) {
       <section>
         <h3>{{ content?.contentModel?.bodyText }}</h3>
         <table class="xxx-table">
@@ -18,9 +18,9 @@
             <th class="xxx-table-cell-header">First Name</th>
             <th class="xxx-table-cell-header">Last Name</th>
           </tr>
-          @for (user of users$ | async; track user) {
+          @for (user of $users(); track user) {
             <tr class="xxx-table-row"
-                [class.active]="(selectedUserId$ | async)===user.id"
+                [class.active]="($selectedUserId())===user.id"
                 (click)="rowClick(user)">
               <td class="xxx-table-cell">{{ user.id }}</td>
               <td class="xxx-table-cell">{{ user.firstName }}</td>

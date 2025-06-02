@@ -1,6 +1,5 @@
 import {AsyncPipe} from '@angular/common';
 import {ChangeDetectionStrategy, Component, inject, Signal} from '@angular/core';
-import {Observable} from "rxjs";
 import {XxxContent} from "../xxx-common/xxx-content/xxx-content.types";
 import {XxxContentComponent} from '../xxx-common/xxx-content/xxx-content.component';
 import {XxxContentFacade} from "../xxx-common/xxx-content/xxx-content-facade.service";
@@ -22,11 +21,11 @@ export class XxxUserComponent {
   contentKey: string = 'user';
   private userFacade: XxxUserFacade = inject(XxxUserFacade);
   $content: Signal<XxxContent | undefined> = this.contentFacade.$content;
-  isUsersEmpty$: Observable<boolean> = this.userFacade.isUsersEmpty$;
-  isUsersLoaded$: Observable<boolean> = this.userFacade.isUsersLoaded$;
-  isUsersLoading$: Observable<boolean> = this.userFacade.isUsersLoading$;
-  selectedUserId$: Observable<number | undefined> = this.userFacade.selectedUserId$;
-  users$: Observable<XxxUser[]> = this.userFacade.users$;
+  $isUsersEmpty: Signal<boolean> = this.userFacade.$isUsersEmpty;
+  $isUsersLoaded: Signal<boolean> = this.userFacade.$isUsersLoaded;
+  $isUsersLoading: Signal<boolean> = this.userFacade.$isUsersLoading;
+  $selectedUserId: Signal<number | undefined> = this.userFacade.$selectedUserId;
+  $users: Signal<XxxUser[]> = this.userFacade.$users;
 
   constructor() {
     this.contentFacade.showContent(this.contentKey)

@@ -1,20 +1,23 @@
-import {Injectable} from '@angular/core';
-import {Observable, of} from "rxjs";
+import {inject, Injectable, Signal} from '@angular/core';
 import {XxxUser} from "./xxx-user.types";
+import {XxxUserStore} from "./xxx-user.store";
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
 export class XxxUserFacade {
-    isUsersEmpty$: Observable<boolean> = of(false);
-    isUsersLoaded$: Observable<boolean> = of(false);
-    isUsersLoading$: Observable<boolean> = of(false);
-    selectedUserId$: Observable<number | undefined> = of(undefined);
-    users$: Observable<XxxUser[]> = of([]);
+  userStore: XxxUserStore = inject(XxxUserStore);
+  $isUsersEmpty: Signal<boolean> = this.userStore.$isUsersEmpty_;
+  $isUsersLoaded: Signal<boolean> = this.userStore.$isUsersLoaded_;
+  $isUsersLoading: Signal<boolean> = this.userStore.$isUsersLoading_;
+  $selectedUserId: Signal<number | undefined> = this.userStore.$selectedUserId_;
+  $users: Signal<XxxUser[]> = this.userStore.$users_;
 
-    showUsers(): void {
-    }
+  showUsers(): void {
+    this.userStore.showUsersAction();
+  }
 
-    selectUser(userId: number): void {
-    }
+  selectUser(userId: number): void {
+    this.userStore.selectUserAction(userId);
+  }
 }
