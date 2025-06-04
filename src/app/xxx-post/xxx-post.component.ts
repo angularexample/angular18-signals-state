@@ -28,7 +28,7 @@ export class XxxPostComponent {
 
   constructor() {
     this.contentFacade.showContent(this.contentKey)
-    this.postFacade.getPosts();
+    this.postFacade.showPosts();
   }
 
   selectPost(post: XxxPost) {

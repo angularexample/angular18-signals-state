@@ -27,17 +27,17 @@ export class XxxUserStore {
   private $userState: WritableSignal<XxxUserState> = signal<XxxUserState>(xxxUserInitialState);
 
 // Actions
-  getUsersAction() {
+  private getUsersAction() {
     this.getUsersReducer();
     this.getUsersEffect();
   }
 
-  getUsersErrorAction(err: HttpErrorResponse) {
+  private getUsersErrorAction(err: HttpErrorResponse) {
     this.getUsersErrorReducer();
     this.getUsersErrorEffect(err);
   }
 
-  getUsersSuccessAction(users: XxxUser[]) {
+  private getUsersSuccessAction(users: XxxUser[]) {
     this.getUsersSuccessReducer(users);
     this.getUsersSuccessEffect(users);
   }
@@ -64,8 +64,8 @@ export class XxxUserStore {
 
   $users_: Signal<XxxUser[]> = computed(() => this.$userState().users);
 
-// Reducers
-  getUsersReducer() {
+  // Reducers
+  private getUsersReducer() {
     this.$userState.update(state =>
       ({
         ...state,
@@ -75,7 +75,7 @@ export class XxxUserStore {
     )
   }
 
-  getUsersErrorReducer() {
+  private getUsersErrorReducer() {
     this.$userState.update(state =>
       ({
         ...state,
@@ -84,7 +84,7 @@ export class XxxUserStore {
     )
   }
 
-  getUsersSuccessReducer(users: XxxUser[]) {
+  private getUsersSuccessReducer(users: XxxUser[]) {
     this.$userState.update(state =>
       ({
         ...state,
@@ -94,7 +94,7 @@ export class XxxUserStore {
     )
   }
 
-  selectUserReducer(userId: number) {
+  private selectUserReducer(userId: number) {
     this.$userState.update(state =>
       ({
         ...state,
@@ -104,7 +104,7 @@ export class XxxUserStore {
   }
 
 // Effects
-  getUsersEffect() {
+  private getUsersEffect() {
     this.loadingService.loadingOn();
     this.userDataService.getUsers().pipe(
       catchError((err: HttpErrorResponse) => {
@@ -123,21 +123,21 @@ export class XxxUserStore {
     })
   }
 
-  getUsersErrorEffect(err: HttpErrorResponse) {
+  private getUsersErrorEffect(err: HttpErrorResponse) {
     this.loadingService.loadingOff();
     const errorMessage: string = XxxHttpUtilities.setErrorMessage(err);
     this.alertService.showError(errorMessage);
   }
 
-  getUsersSuccessEffect(users: XxxUser[]) {
+  private getUsersSuccessEffect(users: XxxUser[]) {
     this.loadingService.loadingOff();
   }
 
-  selectUserEffect(userId: number) {
+  private selectUserEffect(userId: number) {
     this.router.navigateByUrl('/post')
   }
 
-  showUsersEffect() {
+  private showUsersEffect() {
     if (!this.$isUsersLoaded_()) {
       this.getUsersAction();
     }

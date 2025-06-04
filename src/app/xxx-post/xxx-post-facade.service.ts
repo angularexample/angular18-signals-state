@@ -17,8 +17,8 @@ export class XxxPostFacadeService {
   $selectedPost: Signal<XxxPost | undefined> = this.postStore.$selectedPost_;
   $selectedPostId: Signal<number | undefined> = this.postStore.$selectedPostId_;
 
-  getPosts(): void {
-    this.postStore.getPostsAction();
+  showPosts(): void {
+    this.postStore.showPostsAction();
   }
 
   selectPost(postId: number): void {

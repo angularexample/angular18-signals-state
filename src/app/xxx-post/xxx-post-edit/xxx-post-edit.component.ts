@@ -1,4 +1,3 @@
-import {AsyncPipe} from '@angular/common';
 import {ChangeDetectionStrategy, Component, inject, Signal} from '@angular/core';
 import {debounceTime, distinctUntilChanged} from "rxjs";
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
@@ -20,7 +19,7 @@ import {XxxPostFacadeService} from "../xxx-post-facade.service";
   templateUrl: './xxx-post-edit.component.html',
 })
 export class XxxPostEditComponent {
-  private contentFacade: XxxContentFacade= inject(XxxContentFacade)
+  private contentFacade: XxxContentFacade = inject(XxxContentFacade)
   contentKey: string = 'post-edit';
   $content: Signal<XxxContent | undefined> = this.contentFacade.$content;
   $isNoSelectedPost: Signal<boolean> = this.postFacade.$isNoSelectedPost;
@@ -31,7 +30,7 @@ export class XxxPostEditComponent {
     title: new FormControl(xxxPostFormDataInitial.title, Validators.required),
     userId: new FormControl(xxxPostFormDataInitial.userId)
   });
-  selectedPost$: Signal<XxxPost | undefined> = this.postFacade.$selectedPost;
+  $selectedPost: Signal<XxxPost | undefined> = this.postFacade.$selectedPost;
 
   constructor(
     private postFacade: XxxPostFacadeService
@@ -46,14 +45,10 @@ export class XxxPostEditComponent {
   }
 
   private loadFormData(): void {
-    //TODO
-    // this.selectedPost$.pipe(
-    //   takeUntilDestroyed(),
-    // ).subscribe((post: XxxPost | undefined): void => {
-    //   if (post !== undefined) {
-    //     this.postForm.setValue(post);
-    //   }
-    // })
+    const post: XxxPost | undefined = this.$selectedPost();
+    if (post !== undefined) {
+      this.postForm.setValue(post);
+    }
   }
 
   private subscribeToFormChanges(): void {
@@ -62,7 +57,8 @@ export class XxxPostEditComponent {
       distinctUntilChanged(),
       takeUntilDestroyed(),
     ).subscribe(value => {
-      this.postFacade.setPostForm(value);
+      const post: XxxPost = <XxxPost>value;
+      this.postFacade.setPostForm(post);
     });
   }
 }

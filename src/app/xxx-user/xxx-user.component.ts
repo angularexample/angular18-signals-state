@@ -9,7 +9,6 @@ import {XxxUserFacade} from "./xxx-user-facade.service";
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    AsyncPipe,
     XxxContentComponent,
   ],
   selector: 'xxx-user',

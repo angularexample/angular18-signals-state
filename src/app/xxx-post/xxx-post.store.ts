@@ -30,17 +30,17 @@ export class XxxPostStore {
 
   // Actions
   // In this design actions are methods that trigger reducers and effects
-  getPostsAction() {
+  private getPostsAction() {
     this.getPostsReducer();
     this.getPostsEffect();
   }
 
-  getPostsErrorAction(err: HttpErrorResponse) {
+  private getPostsErrorAction(err: HttpErrorResponse) {
     this.getPostsErrorReducer();
     this.getPostsErrorEffect(err);
   }
 
-  getPostsSuccessAction(posts: XxxPost[]) {
+  private getPostsSuccessAction(posts: XxxPost[]) {
     this.getPostsSuccessReducer(posts);
     this.getPostsSuccessEffect();
   }
@@ -62,6 +62,17 @@ export class XxxPostStore {
     this.updatePostReducer();
     this.updatePostEffect();
   }
+
+  private updatePostErrorAction(err: HttpErrorResponse | undefined) {
+    this.updatePostErrorReducer();
+    this.updatePostErrorEffect(err);
+  }
+
+  private updatePostSuccessAction() {
+    this.updatePostSuccessReducer();
+    this.updatePostSuccessEffect();
+  }
+
 
   // Selectors
   $isNoSelectedPost_: Signal<boolean> = computed(() => this.$postState().selectedPostId === undefined);
@@ -163,7 +174,25 @@ export class XxxPostStore {
     )
   }
 
-// Effects
+  private updatePostErrorReducer() {
+    this.$postState.update(state =>
+      ({
+        ...state,
+        isPostUpdating: false
+      })
+    )
+  }
+
+  private updatePostSuccessReducer() {
+    this.$postState.update(state =>
+      ({
+        ...state,
+        isPostUpdating: false
+      })
+    )
+  }
+
+  // Effects
   private getPostsEffect() {
     const userId: number | undefined = this.userStore.$selectedUserId_();
     if (userId === undefined) {
@@ -181,27 +210,60 @@ export class XxxPostStore {
     })
   }
 
-  getPostsErrorEffect(err: HttpErrorResponse) {
+  private getPostsErrorEffect(err: HttpErrorResponse) {
     this.loadingService.loadingOff();
     const errorMessage: string = XxxHttpUtilities.setErrorMessage(err);
     this.alertService.showError(errorMessage);
   }
 
-  getPostsSuccessEffect() {
+  private getPostsSuccessEffect() {
     this.loadingService.loadingOff();
   }
 
-  selectPostEffect() {
-    this.router.navigateByUrl('/post')
+  private selectPostEffect() {
+    this.router.navigateByUrl('/post/edit')
   }
 
-  showPostsEffect() {
+  private showPostsEffect() {
     if (!this.$isPostsLoaded_()) {
       this.getPostsAction();
     }
   }
 
-  updatePostEffect() {
-    //TODO
+  private updatePostEffect() {
+    this.loadingService.loadingOn();
+    const post: XxxPost | undefined = this.$postForm_();
+    if (post === undefined) {
+      this.updatePostErrorAction(undefined);
+      return;
+    } else {
+      let isError: boolean = false;
+      this.postDataService.updatePost(post).pipe(
+        catchError((err: HttpErrorResponse) => {
+          isError = true;
+          this.updatePostErrorAction(err);
+          return of({});
+        })
+      ).subscribe(() => {
+        if (!isError) {
+          this.updatePostSuccessAction()
+        }
+      })
+    }
+  }
+
+  private updatePostErrorEffect(err: HttpErrorResponse | undefined) {
+    this.loadingService.loadingOff();
+    let errorMessage: string = 'Error occurred. Unable to update post.';
+    if (err) {
+      errorMessage = `${errorMessage} ${XxxHttpUtilities.setErrorMessage(err)}`;
+    }
+    this.alertService.showError(errorMessage);
+  }
+
+  private updatePostSuccessEffect() {
+    this.loadingService.loadingOff();
+    this.alertService.showInfo('Successfully updated post');
+    this.router.navigateByUrl('/post')
   }
 }
