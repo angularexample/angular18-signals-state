@@ -5,12 +5,6 @@ export interface XxxPost {
   userId: number;
 }
 
-export interface XxxPostResponse {
-  id: number;
-}
-
-export const xxxPostFeatureName = 'xxxPost';
-
 export const xxxPostFormDataInitial: XxxPost = {
   body: '',
   id: 0,

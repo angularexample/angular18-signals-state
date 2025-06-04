@@ -1,30 +1,35 @@
-import {Injectable} from '@angular/core';
-import {Observable, of} from "rxjs";
+import {inject, Injectable, Signal} from '@angular/core';
 import {XxxPost} from "./xxx-post.types";
+import {XxxPostStore} from './xxx-post.store';
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
 export class XxxPostFacadeService {
-    isNoSelectedPost$: Observable<boolean> =of(false);
-    isNoSelectedUser$: Observable<boolean> = of(false);
-    isPostsEmpty$: Observable<boolean> = of(false);
-    isPostsLoaded$: Observable<boolean> = of(false);
-    isPostsLoading$: Observable<boolean> = of(false);
-    isSaveButtonDisabled$: Observable<boolean> = of(false);
-    posts$: Observable<XxxPost[]> = of([]);
-    selectedPost$: Observable<XxxPost | undefined> = of(undefined);
-    selectedPostId$: Observable<number | undefined> = of(undefined);
+  private postStore: XxxPostStore = inject(XxxPostStore);
+  $isNoSelectedPost: Signal<boolean> = this.postStore.$isNoSelectedPost_;
+  $isNoSelectedUser: Signal<boolean> = this.postStore.$isNoSelectedUser_;
+  $isPostsEmpty: Signal<boolean> = this.postStore.$isPostsEmpty_;
+  $isPostsLoaded: Signal<boolean> = this.postStore.$isPostsLoaded_;
+  $isPostsLoading: Signal<boolean> = this.postStore.$isPostsLoading_;
+  $isSaveButtonDisabled: Signal<boolean> = this.postStore.$isSaveButtonDisabled_;
+  $posts: Signal<XxxPost[]> = this.postStore.$posts_;
+  $selectedPost: Signal<XxxPost | undefined> = this.postStore.$selectedPost_;
+  $selectedPostId: Signal<number | undefined> = this.postStore.$selectedPostId_;
 
-    getUserPosts(): void {
-    }
+  getPosts(): void {
+    this.postStore.getPostsAction();
+  }
 
-    selectPost(postId: number): void {
-    }
+  selectPost(postId: number): void {
+    this.postStore.selectPostAction(postId);
+  }
 
-    setPostForm(post: XxxPost): void {
-    }
+  setPostForm(post: XxxPost): void {
+    this.postStore.setPostFormAction(post)
+  }
 
-    updatePost(): void {
-    }
+  updatePost(): void {
+    this.postStore.updatePostAction()
+  }
 }

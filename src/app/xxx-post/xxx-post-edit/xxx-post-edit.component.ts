@@ -1,6 +1,6 @@
 import {AsyncPipe} from '@angular/common';
 import {ChangeDetectionStrategy, Component, inject, Signal} from '@angular/core';
-import {debounceTime, distinctUntilChanged, Observable} from "rxjs";
+import {debounceTime, distinctUntilChanged} from "rxjs";
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 import {XxxContent} from "../../xxx-common/xxx-content/xxx-content.types";
@@ -12,7 +12,6 @@ import {XxxPostFacadeService} from "../xxx-post-facade.service";
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    AsyncPipe,
     ReactiveFormsModule,
     XxxContentComponent,
   ],
@@ -24,20 +23,20 @@ export class XxxPostEditComponent {
   private contentFacade: XxxContentFacade= inject(XxxContentFacade)
   contentKey: string = 'post-edit';
   $content: Signal<XxxContent | undefined> = this.contentFacade.$content;
-  isNoSelectedPost$: Observable<boolean> = this.postFacade.isNoSelectedPost$;
-  isSaveButtonDisabled$: Observable<boolean> = this.postFacade.isSaveButtonDisabled$;
+  $isNoSelectedPost: Signal<boolean> = this.postFacade.$isNoSelectedPost;
+  $isSaveButtonDisabled: Signal<boolean> = this.postFacade.$isSaveButtonDisabled;
   postForm: FormGroup = new FormGroup({
     body: new FormControl(xxxPostFormDataInitial.body, Validators.required),
     id: new FormControl(xxxPostFormDataInitial.id),
     title: new FormControl(xxxPostFormDataInitial.title, Validators.required),
     userId: new FormControl(xxxPostFormDataInitial.userId)
   });
-  selectedPost$: Observable<XxxPost | undefined> = this.postFacade.selectedPost$;
+  selectedPost$: Signal<XxxPost | undefined> = this.postFacade.$selectedPost;
 
   constructor(
     private postFacade: XxxPostFacadeService
   ) {
-    //this.contentFacade.getContent(this.contentKey)
+    this.contentFacade.showContent(this.contentKey)
     this.loadFormData();
     this.subscribeToFormChanges();
   }
@@ -47,13 +46,14 @@ export class XxxPostEditComponent {
   }
 
   private loadFormData(): void {
-    this.selectedPost$.pipe(
-      takeUntilDestroyed(),
-    ).subscribe((post: XxxPost | undefined): void => {
-      if (post !== undefined) {
-        this.postForm.setValue(post);
-      }
-    })
+    //TODO
+    // this.selectedPost$.pipe(
+    //   takeUntilDestroyed(),
+    // ).subscribe((post: XxxPost | undefined): void => {
+    //   if (post !== undefined) {
+    //     this.postForm.setValue(post);
+    //   }
+    // })
   }
 
   private subscribeToFormChanges(): void {

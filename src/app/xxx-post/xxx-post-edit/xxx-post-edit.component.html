@@ -4,7 +4,7 @@
     <section>
       <h2>{{ content?.contentModel?.pageTitle }}</h2>
     </section>
-    @if (isNoSelectedPost$ | async) {
+    @if ($isNoSelectedPost()) {
       <div>There is no selected post.</div>
       <div>Go to User page to select a user. Then on Posts page select a post.</div>
     } @else {
@@ -31,7 +31,7 @@
           @if (postForm.controls['body'].errors?.['required']) {
             <div class="xxx-input-validation">Body is required.</div>
           }
-          <input [disabled]="(isSaveButtonDisabled$ | async) || postForm.invalid" type="submit" value="Save Post">
+          <input [disabled]="($isSaveButtonDisabled()) || postForm.invalid" type="submit" value="Save Post">
         </form>
       </section>
     }

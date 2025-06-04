@@ -9,7 +9,7 @@ import {XxxUser, XxxUserApiResponse, xxxUserInitialState, XxxUserState} from "./
 import {XxxUserDataService} from "./xxx-user-data.service"
 
 /**
- * XxxUserStore is the feature state for the User page.
+ * XxxUserStore is the feature state for the user page.
  * State management for Angular using only Signals and RxJS.
  * If you already know NgRx then we have organized it using the same categories.
  */
@@ -59,6 +59,8 @@ export class XxxUserStore {
   $isUsersLoading_: Signal<boolean> = computed(() => this.$userState().isUsersLoading);
 
   $selectedUserId_: Signal<number | undefined> = computed(() => this.$userState().selectedUserId);
+
+  $isNoSelectedUser_: Signal<boolean> = computed(() => this.$selectedUserId_() === undefined);
 
   $users_: Signal<XxxUser[]> = computed(() => this.$userState().users);
 

@@ -4,16 +4,16 @@
     <section>
       <h2>{{ content?.contentModel?.pageTitle }}</h2>
     </section>
-    @if (isNoSelectedUser$ | async) {
+    @if ($isNoSelectedUser()) {
       <div>There is no selected user.</div>
       <div>Go to User page to select a user.</div>
     }
-    @if (isPostsLoading$ | async) {
+    @if ($isPostsLoading()) {
       <p>Loading...</p>
-    } @else if (isPostsEmpty$ | async) {
+    } @else if ($isPostsEmpty()) {
       <p>None found. Try a different user.</p>
     }
-    @if (isPostsLoaded$ | async) {
+    @if ($isPostsLoaded()) {
       <section>
         <h3>{{ content?.contentModel?.bodyText }}</h3>
         <table class="xxx-table">
@@ -22,10 +22,10 @@
             <th class="xxx-table-cell-header">Title</th>
             <th class="xxx-table-cell-header">Body</th>
           </tr>
-          @for (post of posts$ | async; track post) {
+          @for (post of $posts(); track post) {
             <tr
               class="xxx-table-row"
-              [class.active]="(selectedPostId$|async)===post.id"
+              [class.active]="($selectedPostId())===post.id"
               (click)="selectPost(post)">
               <td class="xxx-table-cell">{{ post.id }}</td>
               <td class="xxx-table-cell">{{ post.title }}</td>

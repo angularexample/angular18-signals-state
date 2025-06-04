@@ -4,6 +4,7 @@ export interface XxxUser {
   lastName: string;
 }
 
+// Actual api user object has manu more fields but we require a smaller set
 export interface XxxUserApiResponse {
   limit: number;
   skip: number;
