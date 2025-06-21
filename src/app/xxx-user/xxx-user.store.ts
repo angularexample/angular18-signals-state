@@ -10,7 +10,7 @@ import {XxxUserDataService} from "./xxx-user-data.service"
 
 /**
  * XxxUserStore is the feature state for the user page.
- * State management for Angular using only Signals and RxJS.
+ * State management for Angular using only Signals.
  * If you already know NgRx then we have organized it using the same categories.
  */
 @Injectable({
