@@ -17,9 +17,9 @@ import {XxxUserDataService} from "./xxx-user-data.service"
   providedIn: 'root'
 })
 export class XxxUserStore {
-  private router: Router = inject(Router);
   private alertService: XxxAlertService = inject(XxxAlertService);
   private loadingService: XxxLoadingService = inject(XxxLoadingService);
+  private router: Router = inject(Router);
   private userDataService: XxxUserDataService = inject(XxxUserDataService);
 
   // State
