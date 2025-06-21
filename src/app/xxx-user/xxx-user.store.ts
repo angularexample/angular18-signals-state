@@ -52,9 +52,6 @@ export class XxxUserStore {
   }
 
 // Selectors
-  $isUsersEmpty_: Signal<boolean> = computed(() => !this.$userState().isUsersLoading && this.$userState().users.length === 0);
-
-  $isUsersLoaded_: Signal<boolean> = computed(() => this.$userState().users.length > 0);
 
   $isUsersLoading_: Signal<boolean> = computed(() => this.$userState().isUsersLoading);
 
@@ -63,6 +60,11 @@ export class XxxUserStore {
   $isNoSelectedUser_: Signal<boolean> = computed(() => this.$selectedUserId_() === undefined);
 
   $users_: Signal<XxxUser[]> = computed(() => this.$userState().users);
+
+  $isUsersEmpty_: Signal<boolean> = computed(() => !this.$isUsersLoading_() && this.$users_().length === 0);
+
+  $isUsersLoaded_: Signal<boolean> = computed(() => this.$users_().length > 0);
+
 
   // Reducers
   private getUsersReducer() {
