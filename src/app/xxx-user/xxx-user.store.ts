@@ -26,7 +26,7 @@ export class XxxUserStore {
   // Where we store all the properties needed to support the view
   private $userState: WritableSignal<XxxUserState> = signal<XxxUserState>(xxxUserInitialState);
 
-// Actions
+  // Actions
   private getUsersAction() {
     this.getUsersReducer();
     this.getUsersEffect();
@@ -51,8 +51,7 @@ export class XxxUserStore {
     this.showUsersEffect();
   }
 
-// Selectors
-
+  // Selectors
   $isUsersLoading_: Signal<boolean> = computed(() => this.$userState().isUsersLoading);
 
   $selectedUserId_: Signal<number | undefined> = computed(() => this.$userState().selectedUserId);
@@ -105,7 +104,7 @@ export class XxxUserStore {
     )
   }
 
-// Effects
+  // Effects
   private getUsersEffect() {
     this.loadingService.loadingOn();
     this.userDataService.getUsers().pipe(
