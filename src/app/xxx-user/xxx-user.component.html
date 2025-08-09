@@ -18,7 +18,7 @@
             <th class="xxx-table-cell-header">First Name</th>
             <th class="xxx-table-cell-header">Last Name</th>
           </tr>
-          @for (user of $users(); track user) {
+          @for (user of $users(); track user.id) {
             <tr class="xxx-table-row"
                 [class.active]="($selectedUserId())===user.id"
                 (click)="rowClick(user)">
