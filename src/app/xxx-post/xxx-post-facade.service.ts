@@ -1,6 +1,6 @@
-import {inject, Injectable, Signal} from '@angular/core';
-import {XxxPost} from "./xxx-post.types";
-import {XxxPostStore} from './xxx-post.store';
+import { inject, Injectable, Signal } from '@angular/core';
+import { XxxPost } from "./xxx-post.types";
+import { XxxPostStore } from './xxx-post.store';
 
 @Injectable({
   providedIn: 'root'

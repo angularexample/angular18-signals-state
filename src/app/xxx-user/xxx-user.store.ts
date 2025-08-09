@@ -1,30 +1,45 @@
-import {catchError, of} from "rxjs";
-import {computed, inject, Injectable, Signal, signal, WritableSignal} from "@angular/core";
-import {HttpErrorResponse} from "@angular/common/http";
-import {Router} from "@angular/router";
-import {XxxAlertService} from "../xxx-common/xxx-alert/xxx-alert.service";
-import {XxxHttpUtilities} from "../xxx-common/xxx-utilities/xxx-http-utilities";
-import {XxxLoadingService} from "../xxx-common/xxx-loading/xxx-loading.service";
-import {XxxUser, XxxUserApiResponse, xxxUserInitialState, XxxUserState} from "./xxx-user.types";
-import {XxxUserDataService} from "./xxx-user-data.service"
+import { catchError, of } from "rxjs";
+import { computed, inject, Injectable, Signal, signal, WritableSignal } from "@angular/core";
+import { HttpErrorResponse } from "@angular/common/http";
+import { Router } from "@angular/router";
+import { XxxAlertService } from "../xxx-common/xxx-alert/xxx-alert.service";
+import { XxxHttpUtilities } from "../xxx-common/xxx-utilities/xxx-http-utilities";
+import { XxxLoadingService } from "../xxx-common/xxx-loading/xxx-loading.service";
+import { XxxUser, XxxUserApiResponse, xxxUserInitialState, XxxUserState } from "./xxx-user.types";
+import { XxxUserDataService } from "./xxx-user-data.service"
 
 /**
  * XxxUserStore is the feature state for the user page.
  * State management for Angular using only Signals.
- * If you already know NgRx then we have organized it using the same categories.
+ * If you already know NgRx, then we have organized it using the same categories.
  */
 @Injectable({
   providedIn: 'root'
 })
 export class XxxUserStore {
   private alertService: XxxAlertService = inject(XxxAlertService);
+  // State
   private loadingService: XxxLoadingService = inject(XxxLoadingService);
   private router: Router = inject(Router);
   private userDataService: XxxUserDataService = inject(XxxUserDataService);
-
-  // State
   // Where we store all the properties needed to support the view
   private $userState: WritableSignal<XxxUserState> = signal<XxxUserState>(xxxUserInitialState);
+  // Selectors
+  $isUsersLoading_: Signal<boolean> = computed(() => this.$userState().isUsersLoading);
+  $selectedUserId_: Signal<number | undefined> = computed(() => this.$userState().selectedUserId);
+  $isNoSelectedUser_: Signal<boolean> = computed(() => this.$selectedUserId_() === undefined);
+  $users_: Signal<XxxUser[]> = computed(() => this.$userState().users);
+  $isUsersEmpty_: Signal<boolean> = computed(() => !this.$isUsersLoading_() && this.$users_().length === 0);
+  $isUsersLoaded_: Signal<boolean> = computed(() => this.$users_().length > 0);
+
+  selectUserAction(userId: number) {
+    this.selectUserReducer(userId);
+    this.selectUserEffect();
+  }
+
+  showUsersAction() {
+    this.showUsersEffect();
+  }
 
   // Actions
   private getUsersAction() {
@@ -39,31 +54,8 @@ export class XxxUserStore {
 
   private getUsersSuccessAction(users: XxxUser[]) {
     this.getUsersSuccessReducer(users);
-    this.getUsersSuccessEffect(users);
+    this.getUsersSuccessEffect();
   }
-
-  selectUserAction(userId: number) {
-    this.selectUserReducer(userId);
-    this.selectUserEffect(userId);
-  }
-
-  showUsersAction() {
-    this.showUsersEffect();
-  }
-
-  // Selectors
-  $isUsersLoading_: Signal<boolean> = computed(() => this.$userState().isUsersLoading);
-
-  $selectedUserId_: Signal<number | undefined> = computed(() => this.$userState().selectedUserId);
-
-  $isNoSelectedUser_: Signal<boolean> = computed(() => this.$selectedUserId_() === undefined);
-
-  $users_: Signal<XxxUser[]> = computed(() => this.$userState().users);
-
-  $isUsersEmpty_: Signal<boolean> = computed(() => !this.$isUsersLoading_() && this.$users_().length === 0);
-
-  $isUsersLoaded_: Signal<boolean> = computed(() => this.$users_().length > 0);
-
 
   // Reducers
   private getUsersReducer() {
@@ -130,12 +122,12 @@ export class XxxUserStore {
     this.alertService.showError(errorMessage);
   }
 
-  private getUsersSuccessEffect(users: XxxUser[]) {
+  private getUsersSuccessEffect() {
     this.loadingService.loadingOff();
   }
 
-  private selectUserEffect(userId: number) {
-    this.router.navigateByUrl('/post')
+  private selectUserEffect() {
+    void this.router.navigateByUrl('/post')
   }
 
   private showUsersEffect() {

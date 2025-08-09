@@ -1,9 +1,9 @@
-import {ChangeDetectionStrategy, Component, inject, Signal} from '@angular/core';
-import {XxxContent} from "../xxx-common/xxx-content/xxx-content.types";
-import {XxxContentComponent} from '../xxx-common/xxx-content/xxx-content.component';
-import {XxxContentFacade} from "../xxx-common/xxx-content/xxx-content-facade.service";
-import {XxxPost} from "./xxx-post.types";
-import {XxxPostFacadeService} from "./xxx-post-facade.service";
+import { ChangeDetectionStrategy, Component, inject, Signal } from '@angular/core';
+import { XxxContent } from "../xxx-common/xxx-content/xxx-content.types";
+import { XxxContentComponent } from '../xxx-common/xxx-content/xxx-content.component';
+import { XxxContentFacade } from "../xxx-common/xxx-content/xxx-content-facade.service";
+import { XxxPost } from "./xxx-post.types";
+import { XxxPostFacadeService } from "./xxx-post-facade.service";
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -17,8 +17,8 @@ import {XxxPostFacadeService} from "./xxx-post-facade.service";
 export class XxxPostComponent {
   contentKey: string = 'post';
   private contentFacade: XxxContentFacade = inject(XxxContentFacade);
-  private postFacade: XxxPostFacadeService = inject(XxxPostFacadeService);
   $content: Signal<XxxContent | undefined> = this.contentFacade.$content;
+  private postFacade: XxxPostFacadeService = inject(XxxPostFacadeService);
   $isNoSelectedUser: Signal<boolean> = this.postFacade.$isNoSelectedUser;
   $isPostsEmpty: Signal<boolean> = this.postFacade.$isPostsEmpty;
   $isPostsLoaded: Signal<boolean> = this.postFacade.$isPostsLoaded;

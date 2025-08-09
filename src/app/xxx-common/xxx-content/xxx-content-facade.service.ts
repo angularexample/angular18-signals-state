@@ -1,6 +1,6 @@
-import {inject, Injectable, signal, Signal} from '@angular/core';
-import {XxxContent} from "./xxx-content.types";
-import {XxxContentStore} from "./xxx-content-store";
+import { inject, Injectable, Signal } from '@angular/core';
+import { XxxContent } from "./xxx-content.types";
+import { XxxContentStore } from "./xxx-content-store";
 
 
 @Injectable({

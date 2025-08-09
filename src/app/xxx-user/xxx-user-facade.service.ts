@@ -1,6 +1,6 @@
-import {inject, Injectable, Signal} from '@angular/core';
-import {XxxUser} from "./xxx-user.types";
-import {XxxUserStore} from "./xxx-user.store";
+import { inject, Injectable, Signal } from '@angular/core';
+import { XxxUser } from "./xxx-user.types";
+import { XxxUserStore } from "./xxx-user.store";
 
 @Injectable({
   providedIn: 'root'
