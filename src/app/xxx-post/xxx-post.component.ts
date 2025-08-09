@@ -15,23 +15,23 @@ import { XxxPostFacadeService } from "./xxx-post-facade.service";
   templateUrl: './xxx-post.component.html',
 })
 export class XxxPostComponent {
-  contentKey: string = 'post';
+  protected readonly contentKey: string = 'post';
   private contentFacade: XxxContentFacade = inject(XxxContentFacade);
-  $content: Signal<XxxContent | undefined> = this.contentFacade.$content;
+  protected readonly $content: Signal<XxxContent | undefined> = this.contentFacade.$content;
   private postFacade: XxxPostFacadeService = inject(XxxPostFacadeService);
-  $isNoSelectedUser: Signal<boolean> = this.postFacade.$isNoSelectedUser;
-  $isPostsEmpty: Signal<boolean> = this.postFacade.$isPostsEmpty;
-  $isPostsLoaded: Signal<boolean> = this.postFacade.$isPostsLoaded;
-  $isPostsLoading: Signal<boolean> = this.postFacade.$isPostsLoading;
-  $posts: Signal<XxxPost[]> = this.postFacade.$posts;
-  $selectedPostId: Signal<number | undefined> = this.postFacade.$selectedPostId;
+  protected readonly $isNoSelectedUser: Signal<boolean> = this.postFacade.$isNoSelectedUser;
+  protected readonly $isPostsEmpty: Signal<boolean> = this.postFacade.$isPostsEmpty;
+  protected readonly $isPostsLoaded: Signal<boolean> = this.postFacade.$isPostsLoaded;
+  protected readonly $isPostsLoading: Signal<boolean> = this.postFacade.$isPostsLoading;
+  protected readonly $posts: Signal<XxxPost[]> = this.postFacade.$posts;
+  protected readonly $selectedPostId: Signal<number | undefined> = this.postFacade.$selectedPostId;
 
   constructor() {
     this.contentFacade.showContent(this.contentKey)
     this.postFacade.showPosts();
   }
 
-  selectPost(post: XxxPost) {
+  protected selectPost(post: XxxPost): void {
     this.postFacade.selectPost(post.id);
   }
 }

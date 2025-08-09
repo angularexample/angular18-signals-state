@@ -10,7 +10,7 @@ export class XxxUserDataService {
   private http: HttpClient = inject(HttpClient);
 
   getUsers(): Observable<XxxUserApiResponse> {
-    // delay added to see loading component
+    // delay added to see the loading component
     const url = 'https://dummyjson.com/users/?delay=2000'
     return this.http.get<XxxUserApiResponse>(url);
   }

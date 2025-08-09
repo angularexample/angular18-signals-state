@@ -8,16 +8,16 @@ import { XxxSanitizePipe } from '../xxx-common/xxx-sanitize/xxx-sanitize.pipe';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     XxxContentComponent,
-    XxxSanitizePipe
+    XxxSanitizePipe,
   ],
   selector: 'xxx-home',
   standalone: true,
   templateUrl: './xxx-home.component.html',
 })
 export class XxxHomeComponent {
-  contentFacade: XxxContentFacade = inject(XxxContentFacade);
-  contentKey = 'home';
-  $content: Signal<XxxContent | undefined> = this.contentFacade.$content;
+  protected readonly contentKey = 'home';
+  private contentFacade: XxxContentFacade = inject(XxxContentFacade);
+  protected readonly $content: Signal<XxxContent | undefined> = this.contentFacade.$content;
 
   constructor() {
     this.contentFacade.showContent(this.contentKey);

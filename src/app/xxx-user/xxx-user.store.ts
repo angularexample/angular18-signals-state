@@ -10,7 +10,7 @@ import { XxxUserDataService } from "./xxx-user-data.service"
 
 /**
  * XxxUserStore is the feature state for the user page.
- * State management for Angular using only Signals.
+ * State management for Angular using only Signals and RxJS.
  * If you already know NgRx, then we have organized it using the same categories.
  */
 @Injectable({
@@ -18,47 +18,54 @@ import { XxxUserDataService } from "./xxx-user-data.service"
 })
 export class XxxUserStore {
   private alertService: XxxAlertService = inject(XxxAlertService);
-  // State
   private loadingService: XxxLoadingService = inject(XxxLoadingService);
   private router: Router = inject(Router);
   private userDataService: XxxUserDataService = inject(XxxUserDataService);
+
+  // State
   // Where we store all the properties needed to support the view
   private $userState: WritableSignal<XxxUserState> = signal<XxxUserState>(xxxUserInitialState);
-  // Selectors
-  $isUsersLoading_: Signal<boolean> = computed(() => this.$userState().isUsersLoading);
-  $selectedUserId_: Signal<number | undefined> = computed(() => this.$userState().selectedUserId);
-  $isNoSelectedUser_: Signal<boolean> = computed(() => this.$selectedUserId_() === undefined);
-  $users_: Signal<XxxUser[]> = computed(() => this.$userState().users);
-  $isUsersEmpty_: Signal<boolean> = computed(() => !this.$isUsersLoading_() && this.$users_().length === 0);
-  $isUsersLoaded_: Signal<boolean> = computed(() => this.$users_().length > 0);
 
-  selectUserAction(userId: number) {
+  // Actions
+  selectUserAction(userId: number): void {
     this.selectUserReducer(userId);
     this.selectUserEffect();
   }
 
-  showUsersAction() {
+  showUsersAction(): void {
     this.showUsersEffect();
   }
 
-  // Actions
-  private getUsersAction() {
+  private getUsersAction(): void {
     this.getUsersReducer();
     this.getUsersEffect();
   }
 
-  private getUsersErrorAction(err: HttpErrorResponse) {
+  private getUsersErrorAction(err: HttpErrorResponse): void {
     this.getUsersErrorReducer();
     this.getUsersErrorEffect(err);
   }
 
-  private getUsersSuccessAction(users: XxxUser[]) {
+  private getUsersSuccessAction(users: XxxUser[]): void {
     this.getUsersSuccessReducer(users);
     this.getUsersSuccessEffect();
   }
 
+  // Selectors
+  readonly $isNoSelectedUser_: Signal<boolean> = computed(() => this.$selectedUserId_() === undefined);
+
+  readonly $isUsersEmpty_: Signal<boolean> = computed(() => !this.$userState().isUsersLoading && this.$userState().users.length === 0);
+
+  readonly $isUsersLoaded_: Signal<boolean> = computed(() => this.$userState().users.length > 0);
+
+  readonly $isUsersLoading_: Signal<boolean> = computed(() => this.$userState().isUsersLoading);
+
+  readonly $selectedUserId_: Signal<number | undefined> = computed(() => this.$userState().selectedUserId);
+
+  readonly $users_: Signal<XxxUser[]> = computed(() => this.$userState().users);
+
   // Reducers
-  private getUsersReducer() {
+  private getUsersReducer(): void {
     this.$userState.update(state =>
       ({
         ...state,
@@ -68,7 +75,7 @@ export class XxxUserStore {
     )
   }
 
-  private getUsersErrorReducer() {
+  private getUsersErrorReducer(): void {
     this.$userState.update(state =>
       ({
         ...state,
@@ -77,7 +84,7 @@ export class XxxUserStore {
     )
   }
 
-  private getUsersSuccessReducer(users: XxxUser[]) {
+  private getUsersSuccessReducer(users: XxxUser[]): void {
     this.$userState.update(state =>
       ({
         ...state,
@@ -87,7 +94,7 @@ export class XxxUserStore {
     )
   }
 
-  private selectUserReducer(userId: number) {
+  private selectUserReducer(userId: number): void {
     this.$userState.update(state =>
       ({
         ...state,
@@ -97,7 +104,7 @@ export class XxxUserStore {
   }
 
   // Effects
-  private getUsersEffect() {
+  private getUsersEffect(): void {
     this.loadingService.loadingOn();
     this.userDataService.getUsers().pipe(
       catchError((err: HttpErrorResponse) => {
@@ -110,27 +117,27 @@ export class XxxUserStore {
         };
         return of(emptyResponse);
       })
-    ).subscribe((response: unknown) => {
+    ).subscribe((response: unknown): void => {
       const apiResponse: XxxUserApiResponse = response as XxxUserApiResponse;
       this.getUsersSuccessAction(apiResponse.users);
     })
   }
 
-  private getUsersErrorEffect(err: HttpErrorResponse) {
+  private getUsersErrorEffect(err: HttpErrorResponse): void {
     this.loadingService.loadingOff();
     const errorMessage: string = XxxHttpUtilities.setErrorMessage(err);
     this.alertService.showError(errorMessage);
   }
 
-  private getUsersSuccessEffect() {
+  private getUsersSuccessEffect(): void {
     this.loadingService.loadingOff();
   }
 
-  private selectUserEffect() {
+  private selectUserEffect(): void {
     void this.router.navigateByUrl('/post')
   }
 
-  private showUsersEffect() {
+  private showUsersEffect(): void {
     if (!this.$isUsersLoaded_()) {
       this.getUsersAction();
     }

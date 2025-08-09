@@ -18,7 +18,82 @@ import { XxxUserStore } from "../xxx-user/xxx-user.store";
   providedIn: 'root'
 })
 export class XxxPostStore {
-  $selectedPost_: Signal<XxxPost | undefined> = computed(() => {
+  private alertService: XxxAlertService = inject(XxxAlertService);
+  private loadingService: XxxLoadingService = inject(XxxLoadingService);
+  private postDataService: XxxPostDataService = inject(XxxPostDataService);
+  private router: Router = inject(Router);
+  private userStore: XxxUserStore = inject(XxxUserStore);
+
+  // State
+  // Where we store all the properties needed to support the view
+  private $postState: WritableSignal<XxxPostState> = signal<XxxPostState>(xxxPostInitialState);
+
+  // Actions
+  // In this design actions are methods that trigger reducers and effects
+  private getPostsAction(): void {
+    this.getPostsReducer();
+    this.getPostsEffect();
+  }
+
+  private getPostsErrorAction(err: HttpErrorResponse): void {
+    this.getPostsErrorReducer();
+    this.getPostsErrorEffect(err);
+  }
+
+  private getPostsSuccessAction(posts: XxxPost[]): void {
+    this.getPostsSuccessReducer(posts);
+    this.getPostsSuccessEffect();
+  }
+
+  selectPostAction(postId: number): void {
+    this.selectPostReducer(postId);
+    this.selectPostEffect();
+  }
+
+  setPostFormAction(post: XxxPost): void {
+    this.setPostFormReducer(post);
+  }
+
+  showPostsAction(): void {
+    this.showPostsEffect();
+  }
+
+  updatePostAction(): void {
+    this.updatePostReducer();
+    this.updatePostEffect();
+  }
+
+  private updatePostErrorAction(err: HttpErrorResponse | undefined): void {
+    this.updatePostErrorReducer();
+    this.updatePostErrorEffect(err);
+  }
+
+  private updatePostSuccessAction(): void {
+    this.updatePostSuccessReducer();
+    this.updatePostSuccessEffect();
+  }
+
+
+  // Selectors
+  readonly $isNoSelectedPost_: Signal<boolean> = computed(() => this.$postState().selectedPostId === undefined);
+
+  readonly $isNoSelectedUser_: Signal<boolean> = this.userStore.$isNoSelectedUser_;
+
+  readonly $isPostsEmpty_: Signal<boolean> = computed(() => !this.$postState().isPostsLoading && this.$postState().posts.length === 0);
+
+  readonly $isPostsLoaded_: Signal<boolean> = computed(() => this.$postState().posts.length > 0);
+
+  readonly $isPostsLoading_: Signal<boolean> = computed(() => this.$postState().isPostsLoading);
+
+  readonly $isPostUpdating_: Signal<boolean> = computed(() => this.$postState().isPostUpdating);
+
+  readonly $selectedPostId_: Signal<number | undefined> = computed(() => this.$postState().selectedPostId);
+
+  private readonly $postForm_: Signal<XxxPost | undefined> = computed(() => this.$postState().postForm);
+
+  readonly $posts_: Signal<XxxPost[]> = computed(() => this.$postState().posts);
+
+  readonly $selectedPost_: Signal<XxxPost | undefined> = computed(() => {
     let post: XxxPost | undefined;
     const posts: XxxPost[] = this.$posts_();
     const postId: number | undefined = this.$selectedPostId_();
@@ -27,79 +102,16 @@ export class XxxPostStore {
     }
     return post;
   });
-  private alertService: XxxAlertService = inject(XxxAlertService);
-  private loadingService: XxxLoadingService = inject(XxxLoadingService);
-  private postDataService: XxxPostDataService = inject(XxxPostDataService);
-  private router: Router = inject(Router);
-  private userStore: XxxUserStore = inject(XxxUserStore);
-  // State
-  private: Signal<boolean> = this.userStore.$isUsersLoaded_;
-  // Actions
-  $isNoSelectedUser_: Signal<boolean> = this.userStore.$isNoSelectedUser_;
-  // Where we store all the properties needed to support the view
-  private $postState: WritableSignal<XxxPostState> = signal<XxxPostState>(xxxPostInitialState);
-  // Selectors
-  $isNoSelectedPost_: Signal<boolean> = computed(() => this.$postState().selectedPostId === undefined);
-  $isPostsEmpty_: Signal<boolean> = computed(() => !this.$postState().isPostsLoading && this.$postState().posts.length === 0);
-  $isPostsLoaded_: Signal<boolean> = computed(() => this.$postState().posts.length > 0);
-  $isPostsLoading_: Signal<boolean> = computed(() => this.$postState().isPostsLoading);
-  $isPostUpdating_: Signal<boolean> = computed(() => this.$postState().isPostUpdating);
-  $selectedPostId_: Signal<number | undefined> = computed(() => this.$postState().selectedPostId);
-  $posts_: Signal<XxxPost[]> = computed(() => this.$postState().posts);
-  private $postForm_: Signal<XxxPost | undefined> = computed(() => this.$postState().postForm);
-  $isSaveButtonDisabled_: Signal<boolean> = computed(() => {
+
+  readonly $isSaveButtonDisabled_: Signal<boolean> = computed(() => {
     const postForm: XxxPost | undefined = this.$postForm_();
     const selectedPost: XxxPost | undefined = this.$selectedPost_();
     const isPostFormEqual: boolean = JSON.stringify(selectedPost) === JSON.stringify(postForm);
     return this.$isPostUpdating_() || (!this.$isPostsLoaded_()) || (this.$selectedPost_() === undefined) || (postForm === undefined) || isPostFormEqual;
   });
 
-  selectPostAction(postId: number) {
-    this.selectPostReducer(postId);
-    this.selectPostEffect();
-  }
-
-  setPostFormAction(post: XxxPost) {
-    this.setPostFormReducer(post);
-  }
-
-  showPostsAction() {
-    this.showPostsEffect();
-  }
-
-  updatePostAction() {
-    this.updatePostReducer();
-    this.updatePostEffect();
-  }
-
-  // In this design actions are methods that trigger reducers and effects
-  private getPostsAction() {
-    this.getPostsReducer();
-    this.getPostsEffect();
-  }
-
-  private getPostsErrorAction(err: HttpErrorResponse) {
-    this.getPostsErrorReducer();
-    this.getPostsErrorEffect(err);
-  }
-
-  private getPostsSuccessAction(posts: XxxPost[]) {
-    this.getPostsSuccessReducer(posts);
-    this.getPostsSuccessEffect();
-  }
-
-  private updatePostErrorAction(err: HttpErrorResponse | undefined) {
-    this.updatePostErrorReducer();
-    this.updatePostErrorEffect(err);
-  }
-
-  private updatePostSuccessAction() {
-    this.updatePostSuccessReducer();
-    this.updatePostSuccessEffect();
-  }
-
 // Reducers
-  private getPostsReducer() {
+  private getPostsReducer(): void {
     this.$postState.update(state =>
       ({
         ...state,
@@ -109,7 +121,7 @@ export class XxxPostStore {
     )
   }
 
-  private getPostsErrorReducer() {
+  private getPostsErrorReducer(): void {
     this.$postState.update(state =>
       ({
         ...state,
@@ -118,7 +130,7 @@ export class XxxPostStore {
     )
   }
 
-  private getPostsSuccessReducer(posts: XxxPost[]) {
+  private getPostsSuccessReducer(posts: XxxPost[]): void {
     this.$postState.update(state =>
       ({
         ...state,
@@ -128,7 +140,7 @@ export class XxxPostStore {
     )
   }
 
-  private selectPostReducer(postId: number) {
+  private selectPostReducer(postId: number): void {
     // make sure post exists
     if (this.$postState().posts.some(item => item.id === postId)) {
       this.$postState.update(state =>
@@ -140,8 +152,8 @@ export class XxxPostStore {
     }
   }
 
-  private setPostFormReducer(post: XxxPost) {
-    // Create a new object for immuntability
+  private setPostFormReducer(post: XxxPost): void {
+    // Create a new object for immutability
     const postForm: XxxPost = <XxxPost>JSON.parse(JSON.stringify(post));
     this.$postState.update(state =>
       ({
@@ -151,7 +163,7 @@ export class XxxPostStore {
     )
   }
 
-  private updatePostReducer() {
+  private updatePostReducer(): void {
     this.$postState.update(state =>
       ({
         ...state,
@@ -160,7 +172,7 @@ export class XxxPostStore {
     )
   }
 
-  private updatePostErrorReducer() {
+  private updatePostErrorReducer(): void {
     this.$postState.update(state =>
       ({
         ...state,
@@ -169,7 +181,7 @@ export class XxxPostStore {
     )
   }
 
-  private updatePostSuccessReducer() {
+  private updatePostSuccessReducer(): void {
     this.$postState.update(state =>
       ({
         ...state,
@@ -179,7 +191,7 @@ export class XxxPostStore {
   }
 
   // Effects
-  private getPostsEffect() {
+  private getPostsEffect(): void {
     const userId: number | undefined = this.userStore.$selectedUserId_();
     if (userId === undefined) {
       return;
@@ -196,27 +208,27 @@ export class XxxPostStore {
     })
   }
 
-  private getPostsErrorEffect(err: HttpErrorResponse) {
+  private getPostsErrorEffect(err: HttpErrorResponse): void {
     this.loadingService.loadingOff();
     const errorMessage: string = XxxHttpUtilities.setErrorMessage(err);
     this.alertService.showError(errorMessage);
   }
 
-  private getPostsSuccessEffect() {
+  private getPostsSuccessEffect(): void {
     this.loadingService.loadingOff();
   }
 
-  private selectPostEffect() {
+  private selectPostEffect(): void {
     void this.router.navigateByUrl('/post/edit')
   }
 
-  private showPostsEffect() {
+  private showPostsEffect(): void {
     if (!this.$isPostsLoaded_()) {
       this.getPostsAction();
     }
   }
 
-  private updatePostEffect() {
+  private updatePostEffect(): void {
     this.loadingService.loadingOn();
     const post: XxxPost | undefined = this.$postForm_();
     if (post === undefined) {
@@ -238,7 +250,7 @@ export class XxxPostStore {
     }
   }
 
-  private updatePostErrorEffect(err: HttpErrorResponse | undefined) {
+  private updatePostErrorEffect(err: HttpErrorResponse | undefined): void {
     this.loadingService.loadingOff();
     let errorMessage: string = 'Error occurred. Unable to update post.';
     if (err) {
@@ -247,7 +259,7 @@ export class XxxPostStore {
     this.alertService.showError(errorMessage);
   }
 
-  private updatePostSuccessEffect() {
+  private updatePostSuccessEffect(): void {
     this.loadingService.loadingOff();
     this.alertService.showInfo('Successfully updated post');
     void this.router.navigateByUrl('/post')

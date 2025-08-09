@@ -26,11 +26,11 @@ export class XxxContentStore {
   // Where we store all the properties needed to support the view
   private $contentState: WritableSignal<XxxContentState> = signal<XxxContentState>(xxxContentInitialState);
 
-
   // Actions
-  // To trigger state changes which then change the view
-  // If the operation is asynchronous, use RxJS Subject
-  // If not, then we can call the effect or reducer directly
+  // To trigger state changes which then change the view.
+  // If the operation is asynchronous, use RxJS Subject.
+  // If not, then we can call the effect or reducer directly.
+  // Action methods always run first the reducer and then the effect.
 
   // Action methods run the reducer and effect
   private getContentAction(key: string): void {
@@ -60,6 +60,10 @@ export class XxxContentStore {
   // The workaround is to store the parameter in the state, then access it with a selector.
   // The flaw is the selected key could be overwritten if there are nearly simultaneous transactions of different keys!
 
+  private readonly $contents_: Signal<XxxContent[]> = computed(() =>
+    this.$contentState().contents
+  );
+
   private readonly $selectedKey_: Signal<string | undefined> = computed(() =>
     this.$contentState().selectedKey
   )
@@ -73,10 +77,6 @@ export class XxxContentStore {
     }
     return content;
   })
-
-  private readonly $contents_: Signal<XxxContent[]> = computed(() =>
-    this.$contentState().contents
-  );
 
   readonly $errorMessage_: Signal<string | undefined> = computed(() => {
     const content: XxxContent | undefined = this.$content_();
@@ -102,7 +102,7 @@ export class XxxContentStore {
     return false;
   })
 
-  readonly $isContentLoaded_: Signal<boolean> = computed(() => {
+  private readonly $isContentLoaded_: Signal<boolean> = computed(() => {
     const content: XxxContent | undefined = this.$content_();
     if (content) {
       return content?.status === XxxContentStatus.LOADED;
@@ -122,7 +122,11 @@ export class XxxContentStore {
   // Reducers
   // The only place where we change or update the state values
   // When an action fires, we run the reducer before the effect
-  // Reducers are where we update the state
+
+  private showContentReducer(selectedKey: string): void {
+    this.$contentState.update(state => ({...state, selectedKey}));
+  }
+
   private getContentReducer(key: string): void {
     // Remove any existing content, also replaces the old array for immutability
     const contents: XxxContent[] = this.$contents_().filter(item => item.key !== key);
@@ -182,10 +186,6 @@ export class XxxContentStore {
         contents
       })
     );
-  }
-
-  private showContentReducer(selectedKey: string): void {
-    this.$contentState.update(state => ({...state, selectedKey}));
   }
 
 

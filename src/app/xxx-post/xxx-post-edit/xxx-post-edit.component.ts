@@ -19,19 +19,19 @@ import { XxxPostFacadeService } from "../xxx-post-facade.service";
   templateUrl: './xxx-post-edit.component.html',
 })
 export class XxxPostEditComponent {
-  contentKey: string = 'post-edit';
-  postForm: FormGroup = new FormGroup({
+  protected readonly contentKey: string = 'post-edit';
+  protected postForm: FormGroup = new FormGroup({
     body: new FormControl(xxxPostFormDataInitial.body, Validators.required),
     id: new FormControl(xxxPostFormDataInitial.id),
     title: new FormControl(xxxPostFormDataInitial.title, Validators.required),
     userId: new FormControl(xxxPostFormDataInitial.userId)
   });
-  private contentFacade: XxxContentFacade = inject(XxxContentFacade)
-  $content: Signal<XxxContent | undefined> = this.contentFacade.$content;
+  private contentFacade: XxxContentFacade = inject(XxxContentFacade);
+  protected readonly $content: Signal<XxxContent | undefined> = this.contentFacade.$content;
   private postFacade: XxxPostFacadeService = inject(XxxPostFacadeService);
-  $isNoSelectedPost: Signal<boolean> = this.postFacade.$isNoSelectedPost;
-  $isSaveButtonDisabled: Signal<boolean> = this.postFacade.$isSaveButtonDisabled;
-  $selectedPost: Signal<XxxPost | undefined> = this.postFacade.$selectedPost;
+  protected readonly $isNoSelectedPost: Signal<boolean> = this.postFacade.$isNoSelectedPost;
+  protected readonly $isSaveButtonDisabled: Signal<boolean> = this.postFacade.$isSaveButtonDisabled;
+  protected readonly $selectedPost: Signal<XxxPost | undefined> = this.postFacade.$selectedPost;
 
   constructor() {
     this.contentFacade.showContent(this.contentKey)
@@ -39,7 +39,7 @@ export class XxxPostEditComponent {
     this.subscribeToFormChanges();
   }
 
-  onSubmit() {
+  protected onSubmit(): void {
     this.postFacade.updatePost();
   }
 

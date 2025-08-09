@@ -7,19 +7,15 @@ import { XxxPostStore } from './xxx-post.store';
 })
 export class XxxPostFacadeService {
   private postStore: XxxPostStore = inject(XxxPostStore);
-  $isNoSelectedPost: Signal<boolean> = this.postStore.$isNoSelectedPost_;
-  $isNoSelectedUser: Signal<boolean> = this.postStore.$isNoSelectedUser_;
-  $isPostsEmpty: Signal<boolean> = this.postStore.$isPostsEmpty_;
-  $isPostsLoaded: Signal<boolean> = this.postStore.$isPostsLoaded_;
-  $isPostsLoading: Signal<boolean> = this.postStore.$isPostsLoading_;
-  $isSaveButtonDisabled: Signal<boolean> = this.postStore.$isSaveButtonDisabled_;
-  $posts: Signal<XxxPost[]> = this.postStore.$posts_;
-  $selectedPost: Signal<XxxPost | undefined> = this.postStore.$selectedPost_;
-  $selectedPostId: Signal<number | undefined> = this.postStore.$selectedPostId_;
-
-  showPosts(): void {
-    this.postStore.showPostsAction();
-  }
+  readonly $isNoSelectedPost: Signal<boolean> = this.postStore.$isNoSelectedPost_;
+  readonly $isNoSelectedUser: Signal<boolean> = this.postStore.$isNoSelectedUser_;
+  readonly $isPostsEmpty: Signal<boolean> = this.postStore.$isPostsEmpty_;
+  readonly $isPostsLoaded: Signal<boolean> = this.postStore.$isPostsLoaded_;
+  readonly $isPostsLoading: Signal<boolean> = this.postStore.$isPostsLoading_;
+  readonly $isSaveButtonDisabled: Signal<boolean> = this.postStore.$isSaveButtonDisabled_;
+  readonly $posts: Signal<XxxPost[]> = this.postStore.$posts_;
+  readonly $selectedPost: Signal<XxxPost | undefined> = this.postStore.$selectedPost_;
+  readonly $selectedPostId: Signal<number | undefined> = this.postStore.$selectedPostId_;
 
   selectPost(postId: number): void {
     this.postStore.selectPostAction(postId);
@@ -27,6 +23,10 @@ export class XxxPostFacadeService {
 
   setPostForm(post: XxxPost): void {
     this.postStore.setPostFormAction(post)
+  }
+
+  showPosts(): void {
+    this.postStore.showPostsAction();
   }
 
   updatePost(): void {

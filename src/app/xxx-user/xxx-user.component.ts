@@ -15,22 +15,22 @@ import { XxxUserFacade } from "./xxx-user-facade.service";
   templateUrl: './xxx-user.component.html',
 })
 export class XxxUserComponent {
-  contentKey: string = 'user';
+  protected readonly contentKey: string = 'user';
   private contentFacade: XxxContentFacade = inject(XxxContentFacade);
-  $content: Signal<XxxContent | undefined> = this.contentFacade.$content;
+  protected readonly $content: Signal<XxxContent | undefined> = this.contentFacade.$content;
   private userFacade: XxxUserFacade = inject(XxxUserFacade);
-  $isUsersEmpty: Signal<boolean> = this.userFacade.$isUsersEmpty;
-  $isUsersLoaded: Signal<boolean> = this.userFacade.$isUsersLoaded;
-  $isUsersLoading: Signal<boolean> = this.userFacade.$isUsersLoading;
-  $selectedUserId: Signal<number | undefined> = this.userFacade.$selectedUserId;
-  $users: Signal<XxxUser[]> = this.userFacade.$users;
+  protected readonly $isUsersEmpty: Signal<boolean> = this.userFacade.$isUsersEmpty;
+  protected readonly $isUsersLoaded: Signal<boolean> = this.userFacade.$isUsersLoaded;
+  protected readonly $isUsersLoading: Signal<boolean> = this.userFacade.$isUsersLoading;
+  protected readonly $selectedUserId: Signal<number | undefined> = this.userFacade.$selectedUserId;
+  protected readonly $users: Signal<XxxUser[]> = this.userFacade.$users;
 
   constructor() {
     this.contentFacade.showContent(this.contentKey)
     this.userFacade.showUsers();
   }
 
-  rowClick(user: XxxUser) {
+  protected rowClick(user: XxxUser): void {
     this.userFacade.selectUser(user.id);
   }
 }
